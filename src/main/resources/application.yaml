@@ -1,0 +1,31 @@
+mybatis:
+  type-aliases-package: com.wj.pojo
+  mapper-locations: classpath:mapper/*.xml
+spring:
+  profiles:
+    active: dev
+  thymeleaf:
+    mode: HTML
+  mail:
+    host: smtp.163.com
+    username: wj15118940771@163.com
+    password: MIBURAEZIOPVPNRX
+    protocol: smtps
+    port: 465
+    default-encoding: utf-8
+    properties:
+      mail:
+        smtp:
+          # 如果是用 SSL 方式，需要配置如下属性
+          starttls:
+            enable: true
+            required: true
+
+
+#分页插件
+pagehelper:
+  helper-dialect: mysql
+  params: count=countSql
+  reasonable: false
+  support-methods-arguments: true
+

@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head th:replace="_fragments :: head(~{::title})">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>标签</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/semantic-ui/2.2.4/semantic.min.css">
+  <link rel="stylesheet" href="../../static/css/me.css"  th:href="@{/css/me.css}">
+</head>
+<body>
+
+<!--导航-->
+<nav th:replace="_fragments :: menu(0,${isLogin})" class="ui inverted attached segment m-padded-tb-mini">
+</nav>
+
+<!--中间内容-->
+<div  class="m-container-small m-padded-tb-big">
+  <div class="ui container">
+    <!--header-->
+    <div class="ui container">
+      <!--header-->
+      <div class="ui top attached segment">
+        <div class="ui middle aligned two column grid">
+          <div class="column">
+            <h3 class="ui blue header">查询<h3 th:text="${query}">结果</h3>
+          </div>
+          <div class="right aligned column">
+            共 <h2 class="ui orange header m-inline-block m-text-thin" th:text="${page.total}"> 14 </h2> 个相关
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="ui top attached blue segment">
+      <div th:replace="_fragments :: indexblog"></div>
+    </div>
+
+    <!--footer-->
+    <tr>
+      <th colspan="7" >
+        <div class="ui mini pagination menu" th:if="${page.pages}>1">
+          <div class="ui mini pagination menu" th:if="${page.pages}>1">
+            <div class="ui item mini button"><a th:href="@{/index/search(pagenum=1,query=${query})}">首页</a></div>
+            <div class="ui item mini button"><a th:href="@{/index/search(pagenum=${page.hasPreviousPage}?${page.prePage}:1,query=${query})}">上一页</a></div>
+            <div class="ui item mini button"><a th:href="@{/index/search(pagenum=${page.hasNextPage}?${page.nextPage}:${page.pages},query=${query})}">下一页</a></div>
+            <div class="ui item mini button"><a th:href="@{/index/search(pagenum=${page.pages},query=${query})}">尾页</a></div>
+          </div>
+        </div>
+        <div class="ui mini segment m-inline-block">
+          <p >当前第<span th:text="${page.pageNum}"></span>页，总<span th:text="${page.pages}"></span>页，共<span th:text="${page.total}"></span>条记录</p>
+        </div>
+      </th>
+    </tr>
+
+  </div>
+</div>
+<br><br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br><br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<!--底部footer-->
+<footer  th:replace="_fragments :: footer" class="ui inverted vertical segment m-padded-tb-massive">
+</footer>
+
+
+<!--/*/<th:block th:replace="_fragments :: script">/*/-->
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.2/dist/jquery.min.js"></script>
+<!--/*/</th:block>/*/-->
+
+<script>
+  function search(query,pagenum){
+    $.post("/index/search/next",{
+      "query":search,
+      "pagenum":pagenum
+    },function (responseTxt, statusTxt, xhr) {
+
+    });
+  };
+</script>
+
+</body>
+</html>

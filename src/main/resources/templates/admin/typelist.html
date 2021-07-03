@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head th:replace="_fragments :: head(~{::title})">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>用户博客管理</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/semantic-ui/2.2.4/semantic.min.css">
+    <link rel="stylesheet" href="../../static/css/me.css"  th:href="@{/css/me.css}">
+</head>
+<body>
+
+<!--导航-->
+<nav th:replace="admin/_fragments :: menu(3)" class="ui inverted attached segment m-padded-tb-mini">
+
+</nav>
+
+<!--中间内容-->
+<div  class="m-container-small m-padded-tb-big">
+    <div class="ui container">
+
+        <div class="ui success blue message" th:unless="${#strings.isEmpty(message)}">
+            <i class="close icon"></i>
+            <div class="header">提示：</div>
+            <p th:text="${message}">恭喜，操作成功！</p>
+        </div>
+
+        <div id="table-container">
+            <table th:fragment="blogList" class="ui compact blue table ">
+                <thead>
+                <tr>
+                    <th></th>
+                    <th>名称</th>
+                    <th>创建时间</th>
+                    <th>状态(点击启用/禁用)</th>
+                    <th>更改</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="type,iterStat : ${page.list}">
+                    <td th:text="${iterStat.count}">1</td>
+                    <td >
+                        <a th:text="${type.name}" ></a>
+                    </td>
+                    <td th:text="${#dates.format(type.createTime,'yyyy-MM-dd HH:mm:ss')}">2017-10-02 09:45</td>
+                    <td >
+                        <a th:href="@{/admin/type/status/(typeid=${type.id})}" th:text="${type.status==0?'启用':'禁用'}"></a>
+                    </td>
+                    <td  >
+                        <a  class="ui mini  floated blue basic button "  th:onclick="newtype([[${type.picture}]],[[${type.name}]],[[${type.id}]])">更新</a>
+                    </td>
+
+                </tr>
+                </tbody>
+                <tfoot>
+                <tr>
+                    <th colspan="7" >
+                        <div class="ui mini pagination menu" th:if="${page.pages}>1">
+                            <div class="ui mini pagination menu" th:if="${page.pages}>1">
+                                <div class="ui item mini button"><a th:href="@{/admin/type}">首页</a></div>
+                                <div class="ui item mini button"><a th:href="@{/admin/type(pagenum=${page.hasPreviousPage}?${page.prePage}:1)}">上一页</a></div>
+                                <div class="ui item mini button"><a th:href="@{/admin/type(pagenum=${page.hasNextPage}?${page.nextPage}:${page.pages})}">下一页</a></div>
+                                <div class="ui item mini button"><a th:href="@{/admin/type(pagenum=${page.pages})}">尾页</a></div>
+                            </div>
+                        </div>
+                        <div class="ui mini segment m-inline-block">
+                            <p >当前第<span th:text="${page.pageNum}"></span>页，总<span th:text="${page.pages}"></span>页，共<span th:text="${page.total}"></span>条记录</p>
+                        </div>
+                        <a  th:onclick="newtype(0,'',null)"  class="ui mini right floated blue basic button">添加</a>
+                    </th>
+                </tr>
+                </tfoot>
+            </table>
+
+
+
+        </div>
+        <div class="ui mini modal">
+            <i class="close icon"></i>
+            <div class="header">
+                添加分类
+            </div>
+            <form id="type-form" name="type-form"  th:action="@{/admin/type/saveOrUpdate}" method="post"  enctype="multipart/form-data">
+                <input type="hidden" name="typeid" id="typeid">
+              <div>
+                  <div class="description centttt">
+                      <a>背景图片</a>
+                  </div>
+                  <input type="file" name="image" class="ui  tiny circular image centered" accept="image/*" style="display:none" id="uploadfile"/>
+                  <div class="image content centttt">
+                      <img class="ui small image centered  " id="typeimage" >
+                  </div>
+                  <div class="field">
+                  <div class="centttt">
+                      名称：<input id="typename" name="typename">
+                  </div>
+                  </div>
+                  <br>
+                  <br>
+                  <br>
+                  <div class="actions centttt">
+                      <div class="ui black deny button">
+                          取消
+                      </div>
+                      <div class="ui positive  icon button" id="save-type">
+                          添加
+                          <i class="checkmark icon"></i>
+                      </div>
+                  </div>
+              </div>
+            </form>
+        </div>
+    </div>
+</div>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<!--底部footer-->
+<footer  th:replace="_fragments :: footer" class="ui inverted vertical segment m-padded-tb-massive">
+</footer>
+
+<!--/*/<th:block th:replace="_fragments :: script">/*/-->
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.2/dist/jquery.min.js"></script>
+<!--/*/</th:block>/*/-->
+
+</body>
+<script>
+
+    $('#type-form').form({
+        fields : {
+            typename : {
+                identifier: 'typename',
+                rules: [{
+                    type : 'empty',
+                    prompt: '请输入名称'
+                }]
+            }
+        }
+    });
+    $(".ui.dropdown").dropdown({
+        on:'click' ,//鼠标悬浮显示，默认值是click
+        transition:'swing right', //设置动画效果
+        allowAdditions:true //允许添加新的菜单项
+    });
+
+
+
+    $('.menu.toggle').click(function () {
+        $('.m-item').toggleClass('m-mobile-hide');
+    });
+
+    $('#clear-btn')
+        .on('click', function() {
+            $('.ui.type.dropdown')
+                .dropdown('clear')
+            ;
+        })
+    ;
+    function page(obj) {
+        $("[name='page']").val($(obj).data("page"));
+        loaddata();
+    }
+
+    $("#search-btn").click(function () {
+        $("[name='page']").val(0);
+        loaddata();
+    });
+    function loaddata() {
+        $("#table-container").load(/*[[@{/user/blog_admin/search}]]*/"/user/blog_admin/search",{
+            title : $("[name='title']").val(),
+            type_id : $("[name='type_id']").val(),
+            recommend : $("[name='recommend']").prop('checked'),
+            page : $("[name='page']").val()
+        });
+    }
+    function newtype(picture,name,typeid) {
+
+        if(picture==0){
+            $("#typeimage").attr("src","/images/type/lol-mangs.png") ;
+        }else {
+            $("#typeimage").attr("src",picture) ;
+        }
+        document.getElementById("typename").value=name;
+        document.getElementById("typeid").value=typeid;
+        $('.ui.mini.modal')
+            .modal('show')
+        ;
+    }
+    $(function(){
+        $("#typeimage").click(function(){
+            $("#uploadfile").click();
+        })
+        $("#uploadfile").change(function(){
+
+            var files=$(this)[0].files[0];    //获取文件信息
+            console.log(files);
+            if(files&&files.size<2240000)
+            {
+                var reader=new FileReader();  //调用FileReader
+                reader.onload=function(evt){   //读取操作完成时触发。
+                    $("#typeimage").attr('src',evt.target.result)  //将img标签的src绑定为DataURL
+                    $("#image").attr('class',"images")  //
+                }
+                reader.readAsDataURL(files); //将文件读取为 DataURL(base64)
+            }
+            else{
+                $("[name='image']").val(""),
+                    alert("上传失败");
+            }
+        })
+    });
+    $('#save-type').click(function () {
+
+        var n1 = document.getElementById("typename");
+
+        if(n1.value==''){
+            alert("名称为空，请更改!");
+            return false;
+        }
+        else {
+            $('#type-form').submit();
+            return true;
+        }
+
+
+    });
+
+</script>
+</html>
+

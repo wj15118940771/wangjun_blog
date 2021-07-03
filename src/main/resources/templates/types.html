@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head th:replace="_fragments :: head(~{::title})">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>标签</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/semantic-ui/2.2.4/semantic.min.css">
+  <link rel="stylesheet" href="../../static/css/me.css"  th:href="@{/css/me.css}">
+</head>
+<body>
+
+<!--导航-->
+<nav th:replace="_fragments :: menu(2,${isLogin})" class="ui inverted attached segment m-padded-tb-mini">
+</nav>
+
+<!--中间内容-->
+<div th:fragment="typeList">
+<div  class="m-container-small m-padded-tb-big">
+  <div class="ui container">
+    <!--header-->
+    <div class="ui top attached segment ">
+      <div class="ui middle aligned two column grid">
+        <div class="column">
+          <h3 class="ui blue header">分类</h3>
+        </div>
+        <div class="right aligned column ">
+          共 <h2 class="ui orange header m-inline-block m-text-thin " th:text="${typeMsg.size}"> 14 </h2> 个
+        </div>
+      </div>
+    </div>
+
+    <div class="ui attached segment m-padded-tb-large ">
+      <div class="ui labeled button m-margin-tb-tiny" th:each="typemsg:${typeMsg}" >
+        <a href="#" th:href="@{/type/{id}/msg(id=${typemsg.type.id})}" th:classappend="${typemsg.type.id==activeTagId} ? 'blue'" class="ui basic  button" th:text="${typemsg.type.name}">清单</a>
+        <div class="ui basic  left pointing label " th:text="${typemsg.count}">24</div>
+      </div>
+    </div>
+
+
+    <div class="ui top attached blue segment ">
+      <div th:replace="_fragments :: indexblog"></div>
+    </div>
+
+    <!--footer-->
+    <tr>
+      <th colspan="7" >
+        <div class="ui mini pagination menu" th:if="${page.pages}>1">
+          <div class="ui mini pagination menu" th:if="${page.pages}>1">
+            <div class="ui item mini button"><a th:href="@{/type(pagenum=1)}">首页</a></div>
+            <div class="ui item mini button"><a th:href="@{/type(pagenum=${page.hasPreviousPage}?${page.prePage}:1)}">上一页</a></div>
+            <div class="ui item mini button"><a th:href="@{/type(pagenum=${page.hasNextPage}?${page.nextPage}:${page.pages})}">下一页</a></div>
+            <div class="ui item mini button"><a th:href="@{/type(pagenum=${page.pages})}">尾页</a></div>
+          </div>
+        </div>
+        <div class="ui mini segment m-inline-block">
+          <p >当前第<span th:text="${page.pageNum}"></span>页，总<span th:text="${page.pages}"></span>页，共<span th:text="${page.total}"></span>条记录</p>
+        </div>
+      </th>
+    </tr>
+
+  </div>
+</div>
+</div>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<!--底部footer-->
+<footer  th:replace="_fragments :: footer" class="ui inverted vertical segment m-padded-tb-massive">
+</footer>
+
+<!--/*/<th:block th:replace="_fragments :: script">/*/-->
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.2/dist/jquery.min.js"></script>
+<!--/*/</th:block>/*/-->
+<script>
+  $(".ui.dropdown").dropdown({
+    on:'click' ,//鼠标悬浮显示，默认值是click
+    transition:'swing right', //设置动画效果
+    allowAdditions:true //允许添加新的菜单项
+  });
+
+</script>
+</body>
+</html>

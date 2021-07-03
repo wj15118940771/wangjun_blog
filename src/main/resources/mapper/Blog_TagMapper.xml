@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wj.dao.Blog_TagMapper">
+
+    <sql id="Base_Column" >
+	id,blogid,tagid,status
+    </sql>
+
+    <sql id="Example_Where_Clause">
+        where 1=1
+        <trim suffixOverrides=",">
+            <if test="id !=null and id !=''  ">
+                and id=#{id}
+            </if>
+            <if test="blogid !=null and blogid !=''  ">
+                and blogid=#{blogid}
+            </if>
+            <if test="tagid !=null and tagid !=''  ">
+                and  tagid=#{tagid}
+            </if>
+
+        </trim>
+    </sql>
+
+    <insert id="addBlog_Tag" parameterType="Blog_Tag">
+         insert into blog_tag (`id`,`blogid`,`tagid`,`status`)
+               values (#{id},#{blogid},#{tagid},#{status})
+     </insert>
+
+    <update id="deleteBlog_Tag" parameterType="Blog_Tag">
+        update blog_tag set status = 1 where id=#{id}
+    </update>
+
+    <update id="deleteBlog_Tag2" parameterType="Blog_Tag">
+        update blog_tag set status = 1 where blogid=#{blogid}
+    </update>
+
+    <update id="updateBlog_Tag" parameterType="Blog_Tag">
+        update blog_tag set
+        <trim suffixOverrides=",">
+            <if test="blogid !=null and blogid !=''">
+                blogid=#{blogid},
+            </if>
+            <if test="tagid !=null and tagid !='' ">
+                tagid=#{tagid},
+            </if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <select id="listBlog_Tag" parameterType="Blog_Tag" resultType="Blog_Tag">
+        select  <include refid="Base_Column"></include>
+        from blog_tag
+        <include refid="Example_Where_Clause"></include> and status=0
+    </select>
+
+    <select id="countBlog_Tag" parameterType="String" resultType="Integer">
+        select count(*)
+        from blog_tag where tagid = #{id} and status =0
+    </select>
+
+</mapper>

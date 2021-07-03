@@ -1,0 +1,27 @@
+spring:
+  datasource:
+    driver-class-name: com.mysql.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/blog?serverTimezone=UTC&useSSL=true&useUnicode=true&characterEncoding=UTF-8
+    username: root
+    password: 123456
+logging:
+  level:
+    root: info
+    com.example.myblog: debug
+  file:
+    name: /myblog/logs
+server:
+  port: 8080
+pagehelper:                #分页插件
+  helper-dialect: mysql
+  reasonable: true
+  support-methods-arguments: true
+  params:
+#码云配置
+
+gitee:
+  GITEE_CLIENT_ID: 167bc94ede5f074c81df0b5d16a359f0d5b51a7484f937c5fbed89e7664349d6
+  GITEE_CLIENT_SECRET: bcc7b5d809514b40b2288e13dde02a8539f2d9b861f8a6c770aa64beaaca2489
+  REDIRECT_URI: http://ftdmcz.natappfree.cc/callback
+  grant_type: authorization_code
+  AccesssTokenURL: https://gitee.com/oauth/token

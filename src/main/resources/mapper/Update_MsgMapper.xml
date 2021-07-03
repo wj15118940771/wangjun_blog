@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wj.dao.Update_MsgMapper">
+
+    <sql id="Base_Column" >
+	id,userID,blogID,updatetime,type,status,follower
+    </sql>
+
+    <sql id="Example_Where_Clause">
+        where 1=1
+        <trim suffixOverrides=",">
+            <if test="id !=null and id !=''  ">
+                and id=#{id}
+            </if>
+            <if test="blogID !=null and blogID !=''  ">
+                and blogID=#{blogID}
+            </if>
+            <if test="userID !=null and userID !=''  ">
+                and  userID=#{userID}
+            </if>
+            <if test="type !=null and type !=''  ">
+                and  type=#{type}
+            </if>
+            <if test="status !=null">
+                and  status=#{status}
+            </if>
+            <if test="updateTime !=null and updateTime !='' ">
+                and  updateTime=#{updateTime}
+            </if>
+            <if test="follower !=null  ">
+                and  follower=#{follower}
+            </if>
+        </trim>
+    </sql>
+
+    <insert id="addUpdate_Msg" parameterType="Update_Msg">
+         insert into update_msg (`id`,`userID`,`blogID`,`updatetime`,`type`,`status`,`follower`)
+               values (#{id},#{userID},#{blogID},#{updateTime},#{type},#{status},#{follower})
+     </insert>
+
+    <update id="deleteUpdate_Msg" parameterType="Update_Msg">
+        update update_msg set status = 1 where id=#{id}
+    </update>
+
+    <update id="updateUpdate_Msg" parameterType="Update_Msg">
+        update update_msg set
+        <trim suffixOverrides=",">
+            <if test="userID !=null and userID !=''">
+                userID=#{userID},
+            </if>
+            <if test="userID !=null and userID !='' ">
+                blogID=#{blogID},
+            </if>
+            <if test="blogID !=null and blogID !='' ">
+                blogID=#{blogID},
+            </if>
+            <if test="updateTime !=null  ">
+                updatetime=#{updateTime},
+            </if>
+            <if test="type !=null  ">
+                type=#{type},
+            </if>
+            <if test="status !=null  ">
+                status=#{status},
+            </if>
+            <if test="follower !=null  ">
+                follower=#{follower},
+            </if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <select id="listUpdate_Msg" parameterType="Update_Msg" resultType="Update_Msg">
+        select  <include refid="Base_Column"></include>
+        from update_msg
+        <include refid="Example_Where_Clause"></include> and status=0 ORDER BY updatetime desc
+    </select>
+
+    <select id="getByID" parameterType="String" resultType="Update_Msg">
+        select *
+        from update_msg
+        where id = #{id}
+    </select>
+
+    <select id="countByID" parameterType="String" resultType="int">
+        select count(*)
+        from update_msg
+        where follower = #{id} and status=0
+    </select>
+
+    <update id="deleteWhenUnfollow" parameterType="Update_Msg">
+        update update_msg set status = 1 where userid=#{userID} and follower = #{follower} and status=0
+    </update>
+
+    <update id="deleteAllByFollower" parameterType="Update_Msg">
+        update update_msg set status = 1 where   follower = #{follower} and status=0
+    </update>
+</mapper>

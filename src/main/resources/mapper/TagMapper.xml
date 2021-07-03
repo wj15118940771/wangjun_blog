@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wj.dao.TagMapper">
+
+    <sql id="Base_Column" >
+	id,name,userID,status,createTime,updateTime
+    </sql>
+
+    <sql id="Example_Where_Clause">
+        where 1=1
+        <trim suffixOverrides=",">
+            <if test="id !=null and id !=''  ">
+                and id=#{id}
+            </if>
+            <if test="name !=null and name !=''  ">
+                and name=#{name}
+            </if>
+            <if test="userID !=null and userID !=''  ">
+                and  userID=#{userID}
+            </if>
+            <if test="createTime !=null and createTime !=''  ">
+                and  createTime=#{createTime}
+            </if>
+            <if test="updateTime !=null and updateTime !='' ">
+                and  updateTime=#{updateTime}
+            </if>
+        </trim>
+    </sql>
+
+     <insert id="addTag" parameterType="Tag">
+         insert into tag (`id`,`name`,`userID`,`status`,`createTime`,`updateTime`)
+               values (#{id},#{name},#{userID},#{status},#{createTime},#{updateTime})
+     </insert>
+
+    <update id="deleteTag" parameterType="Tag">
+        update tag set status = 1 where id=#{id}
+    </update>
+
+    <update id="updateTag" parameterType="Tag">
+        update tag set
+        <trim suffixOverrides=",">
+            <if test="name !=null and name !=''">
+                name=#{name},
+            </if>
+            <if test="userID !=null and userID !='' ">
+                userID=#{userID},
+            </if>
+            <if test="status !=null and status !='' ">
+                status=#{status},
+            </if>
+            <if test="createTime !=null  ">
+                createTime=#{createTime},
+            </if>
+            <if test="updateTime !=null  ">
+                updateTime=#{updateTime},
+            </if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <select id="listTag" parameterType="Tag" resultType="Tag">
+        select  <include refid="Base_Column"></include>
+        from tag
+        <include refid="Example_Where_Clause"></include> and status=0 ORDER BY updatetime desc
+    </select>
+
+    <select id="getByID" parameterType="String" resultType="Tag">
+        select  <include refid="Base_Column"></include>
+        from tag
+        where id= #{id} and status=0
+    </select>
+</mapper>

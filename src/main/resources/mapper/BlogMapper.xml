@@ -1,0 +1,227 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wj.dao.BlogMapper">
+
+    <sql id="Base_Column" >
+	id,title,context,picture,tip,visit,appreciate,isComment,isreprint,state,createtime,updatetime,isrecommend,typeid,typename,status,userid,tagsname,tagsid,description
+    </sql>
+
+    <sql id="Example_Where_Clause">
+        where 1=1
+        <trim suffixOverrides=",">
+            <if test="id !=null and id !=''  ">
+                and id=#{id}
+            </if>
+            <if test="title !=null and title !=''  ">
+                and title=#{title}
+            </if>
+            <if test="picture !=null and picture !=''  ">
+                and  picture=#{picture}
+            </if>
+            <if test="tip !=null  and tip !='' ">
+                and  tip=#{tip}
+            </if>
+            <if test="visit !=null and visit !=''  ">
+                and  visit=#{visit}
+            </if>
+            <if test="appreciate !=null and appreciate !='' ">
+                and  appreciate=#{appreciate}
+            </if>
+            <if test="isComment !=null and isComment !='' ">
+                and  isComment=#{isComment}
+            </if>
+            <if test="isReprint !=null and isReprint !='' ">
+                and  isreprint=#{isReprint}
+            </if>
+            <if test="state !=null and state !='' ">
+                and  state=#{state}
+            </if>
+            <if test="createTime !=null and createTime !='' ">
+                and  createtime=#{createTime}
+            </if>
+            <if test="updateTime !=null and updateTime !='' ">
+                and  updatetime=#{updateTime}
+            </if>
+            <if test="isRecommend !=null and isRecommend !='' ">
+                and  isrecommend=#{isRecommend}
+            </if>
+            <if test="typeID !=null and typeID !='' ">
+                and  typeid=#{typeID}
+            </if>
+            <if test="typeName !=null and typeName !='' ">
+                and  typename=#{typeName}
+            </if>
+            <if test="userID !=null and userID !='' ">
+                and  userid=#{userID}
+            </if>
+            <if test="tagsName !=null and tagsName !='' ">
+                and  tagsname=#{tagsName}
+            </if>
+            <if test="tagsID !=null and tagsID !='' ">
+                and  tagsid=#{tagsID}
+            </if>
+            <if test="description !=null and description !='' ">
+                and  description=#{description}
+            </if>
+        </trim>
+    </sql>
+
+    <insert id="addBlog" parameterType="Blog">
+        insert into blog (`id`,`title`,`context`,`picture`,`tip`,`visit`,`appreciate`,`isComment`,`isreprint`,`state`,`createtime`,`updatetime`,`isrecommend`,`typeid`,`typename`,`status`,`userid`,`tagsname`,`tagsid`,`description`)
+                   values (#{id},#{title},#{context},#{picture},#{tip},#{visit},#{appreciate},#{isComment},#{isReprint},#{state},#{createTime},#{updateTime},#{isRecommend},#{typeID},#{typeName},#{status},#{userID},#{tagsName},#{tagsID},#{description})
+    </insert>
+
+    <update id="deleteBlog" parameterType="Blog">
+        update blog set status = 1 where id=#{id}
+    </update>
+
+    <update id="updateBlog" parameterType="Blog">
+        update blog set
+        <trim suffixOverrides=",">
+            <if test="title !=null ">
+                title=#{title},
+            </if>
+            <if test="context !=null">
+                context=#{context},
+            </if>
+            <if test="picture !=null ">
+                picture=#{picture},
+            </if>
+            <if test="tip !=null ">
+                tip=#{tip},
+            </if>
+            <if test="visit !=null ">
+                visit=#{visit},
+            </if>
+            <if test="appreciate !=null ">
+                appreciate=#{appreciate},
+            </if>
+            <if test="isComment !=null ">
+                isComment=#{isComment},
+            </if>
+            <if test="isReprint !=null ">
+                isReprint=#{isReprint},
+            </if>
+            <if test="state !=null ">
+                state=#{state},
+            </if>
+            <if test="createTime !=null ">
+                createTime=#{createTime},
+            </if>
+            <if test="updateTime !=null ">
+                updateTime=#{updateTime},
+            </if>
+            <if test="isRecommend !=null ">
+                isRecommend=#{isRecommend},
+            </if>
+            <if test="typeID !=null ">
+                typeID=#{typeID},
+            </if>
+            <if test="typeName !=null ">
+                typeName=#{typeName},
+            </if>
+            <if test="status !=null ">
+                status=#{status},
+            </if>
+            <if test="userID !=null ">
+                userID=#{userID},
+            </if>
+            <if test="tagsName !=null ">
+                tagsName=#{tagsName},
+            </if>
+            <if test="tagsID !=null ">
+                tagsID=#{tagsID},
+            </if>
+            <if test="description !=null ">
+                description=#{description},
+            </if>
+        </trim> where id =#{id}
+    </update>
+
+    <select id="listBlog" parameterType="Blog" resultType="Blog">
+        select <include refid="Base_Column"></include>
+        from blog
+        <include refid="Example_Where_Clause"></include> and status=0 and state=1 ORDER BY updatetime desc
+    </select>
+
+    <select id="listMyselfBlog" parameterType="Blog" resultType="Blog">
+        select <include refid="Base_Column"></include>
+        from blog
+        <include refid="Example_Where_Clause"></include> and status=0 ORDER BY updatetime desc
+    </select>
+
+    <select id="countBlog" parameterType="String" resultType="Integer">
+        select count(*)
+        from blog where typeID = #{id} and status =0 and state=1
+    </select>
+
+    <select id="getByID" parameterType="String" resultType="Blog">
+        select <include refid="Base_Column"></include>
+        from blog
+       where id= #{id} and status=0
+    </select>
+
+    <select id="countVisit" parameterType="String" resultType="Integer">
+        select sum(visit)
+          from blog
+            where userid=#{id} and status=0
+    </select>
+
+    <select id="countAppreciate" parameterType="String" resultType="Integer">
+        select sum(appreciate)
+          from blog
+            where userid=#{id} and status=0
+    </select>
+
+    <select id="topBlog"  resultType="Blog">
+       select <include refid="Base_Column"></include>
+        from blog  a where status =0
+         ORDER BY a.appreciate desc
+          limit 8
+    </select>
+
+    <select id="queryBlog" parameterType="String" resultType="Blog">
+    select a.*
+    from blog a left join user  b on a.userid = b.id
+    where
+        a.status=0 and b.status=0 and a.state=1
+        and (a.title like "%"#{query}"%"
+    or a.context like "%"#{query}"%"
+    or a.description like "%"#{query}"%"
+    or a.typename like "%"#{query}"%"
+    or a.tagsname like "%"#{query}"%"
+    or b.name like "%"#{query}"%"
+    or b.account like "%"#{query}"%")
+    order by a.updatetime desc
+</select>
+
+    <select id="rightUserBlog" parameterType="String" resultType="Blog">
+        select  <include refid="Base_Column"></include>
+        from blog
+        where  userid=#{id} and status=0
+        ORDER BY createtime desc
+        limit 8
+    </select>
+
+    <select id="getAll"  resultType="Blog">
+       select *
+       from blog
+	   ORDER BY createtime desc
+    </select>
+
+    <select id="getByIDWithStatus" parameterType="String" resultType="Blog">
+        select <include refid="Base_Column"></include>
+        from blog
+        where id= #{id}
+    </select>
+
+    <update id="updateBlogByVisit" parameterType="Blog">
+        update blog set visit = #{visit} where id = #{id}
+    </update>
+
+    <update id="updateBlogByAppreciate" parameterType="Blog">
+        update blog set appreciate = #{appreciate} where id = #{id}
+    </update>
+</mapper>

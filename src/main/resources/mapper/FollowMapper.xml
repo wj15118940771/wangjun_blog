@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wj.dao.FollowMapper">
+
+    <sql id="Base_Column" >
+	id,follow,userID,type,createTime,status,updatetime
+    </sql>
+
+    <sql id="Example_Where_Clause">
+        where 1=1
+        <trim suffixOverrides=",">
+            <if test="id !=null and id !=''  ">
+                and id=#{id}
+            </if>
+            <if test="follow !=null and follow !=''  ">
+                and follow=#{follow}
+            </if>
+            <if test="userID !=null and userID !=''  ">
+                and  userID=#{userID}
+            </if>
+            <if test="type !=null and type !=''  ">
+                and  type=#{type}
+            </if>
+            <if test="createTime !=null and createTime !='' ">
+                and  createTime=#{createTime}
+            </if>
+            <if test="updateTime !=null and updateTime !='' ">
+                and  updateTime=#{updateTime}
+            </if>
+        </trim>
+    </sql>
+
+    <insert id="addFollow" parameterType="Follow">
+         insert into follow (`id`,`follow`,`userID`,`type`,`createTime`,`status`,`updateTime`)
+               values (#{id},#{follow},#{userID},#{type},#{createTime},#{status},#{updateTime})
+     </insert>
+
+    <update id="deleteFollow" parameterType="Follow">
+        update follow set status = 1 where id=#{id}
+    </update>
+
+    <update id="updateFollow" parameterType="Follow">
+        update follow set
+        <trim suffixOverrides=",">
+            <if test="name !=null and name !=''">
+                name=#{name},
+            </if>
+            <if test="userID !=null and userID !='' ">
+                userID=#{userID},
+            </if>
+            <if test="type !=null and type !='' ">
+                type=#{type},
+            </if>
+            <if test="createTime !=null  ">
+                createTime=#{createTime},
+            </if>
+            <if test="updateTime !=null  ">
+                updateTime=#{updateTime},
+            </if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <select id="listFollow" parameterType="Follow" resultType="Follow">
+        select  <include refid="Base_Column"></include>
+        from follow
+        <include refid="Example_Where_Clause"></include> and status=0 ORDER BY createtime desc
+    </select>
+
+    <select id="listFollowEXblogStatus" parameterType="Follow" resultType="Follow">
+        SELECT a.*
+        FROM follow a LEFT JOIN blog b on a.follow=b.id
+
+    WHERE
+	a.type = "blog"
+	AND a.userid = #{userID}
+	AND a.STATUS = 0
+	AND b.STATUS = 0
+    ORDER BY
+	a.createtime DESC
+    </select>
+
+    <select id="getByID" parameterType="String" resultType="Follow">
+        select  *
+        from follow
+        where id = #{id}
+    </select>
+</mapper>

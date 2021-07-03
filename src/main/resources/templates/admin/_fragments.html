@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head th:fragment="head(title)">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:replace="${title}">首页</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/semantic-ui/2.2.4/semantic.min.css">
+    <link rel="stylesheet" href="../../static/lib/editormd/css/editormd.min.css" th:href="@{/lib/editormd/css/editormd.min.css}">
+    <link rel="stylesheet" href="../../static/css/me.css"  th:href="@{/css/me.css}">
+
+</head>
+<body>
+<!--导航-->
+<nav th:fragment="menu(n)" class="ui inverted attached  m-padded-tb-mini toumin">
+
+
+    <div class="ui container" >
+        <div class="ui inverted secondary stackable menu">
+            <h2 class="ui blue header item"><i class="bug icon blue"></i></h2>
+            <a th:href="@{/admin/user}" class="m-item item m-mobile-hide" th:classappend="${n==1} ? 'active'"><i class="user icon"></i>用户管理</a>
+            <a th:href="@{/admin/blog}"  class="m-item item m-mobile-hide" th:classappend="${n==2} ? 'active'"><i class="sticky note outline icon"></i>博客管理</a>
+            <a th:href="@{/admin/type}" class="m-item item m-mobile-hide" th:classappend="${n==3} ? 'active'"><i class="idea icon"></i>分类管理</a>
+            <div class="right m-item m-mobile-hide menu">
+                <div class="ui dropdown  item">
+                    <div class="text">
+                        <img class="ui avatar image" th:src="@{${session.user.view}}" >
+                        <span th:text="${session.user.name}">汪骏</span>
+                    </div>
+                    <i class="dropdown icon"></i>
+                    <div class="menu">
+                        <a th:href="@{/index}" class="item">普通用户</a>
+                        <a href="#" th:href="@{/logout}" class="item">注销</a>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        <a href="#" class="ui menu toggle black icon button m-right-top m-mobile-show">
+            <i class="sidebar icon"></i>
+        </a>
+
+    </div>
+
+
+
+
+</nav>
+<!--中间-->
+<div th:fragment="indexblog" class=" ui padded vertical segment m-padded-tb-large m-mobile-lr-clear  " th:each="blogs,iterStat : ${page.list}">
+    <div class="ui mobile reversed stackable grid">
+        <div class="eleven wide column">
+
+            <div class="container">
+                <h3  class="ui header">
+                    <a th:href="@{/index/{id}/detail(id=${blogs.blog.id})}" class="m-black" th:text="${blogs.blog.title}"></a>
+                </h3>
+                <p  class="m-text "   >
+                    <a th:href="@{/index/{id}/detail(id=${blogs.blog.id})}" th:text="|${blogs.blog.description}......|"></a>
+                </p>
+
+            </div>
+
+            <div class="ui stackable grid">
+                <div class="eleven wide column">
+                    <div class="ui mini horizontal link list">
+                        <div class="item" >
+                            <img src="https://unsplash.it/100/100?image=1005" th:src="@{${blogs.author.view}}" alt="" class="ui avatar image">
+                            <div class="content"><a th:href="@{/user/{id}/detail(id=${blogs.author.id})}" class="header" th:text="${blogs.author.name}">李仁密</a></div>
+                        </div>
+                        <div class="item">
+                            <i class="calendar icon"></i> <span  th:text="${#dates.format(blogs.blog.updateTime,'yyyy-MM-dd HH:mm:ss')}">2017-10-01</span>
+                        </div>
+                        <div class="item">
+                            <i class="eye icon"></i> <span th:text="${blogs.blog.visit}">2323</span>
+                        </div>
+                        <div class="item">
+                            <i class="thumbs up outline icon"></i><span th:text="${blogs.blog.appreciate}">2323</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="right aligned five wide column">
+                    <a th:href="@{/type/{id}/msg(id=${blogs.blog.typeID})}" target="_blank" class="ui blue basic label m-padded-tiny m-text-thin" th:text="${blogs.blog.typeName}"></a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!--分类-->
+<div th:fragment="alltype" class="ui segments ">
+    <div class="ui secondary segment ">
+        <div class="ui two column grid">
+            <div class="column">
+                <i class="blue idea icon"></i>分类
+            </div>
+            <div class="right aligned column">
+                <a th:href="@{/type}" target="_blank">more <i class="angle double right icon"></i></a>
+            </div>
+        </div>
+    </div>
+    <div class="ui blue segment ">
+        <div class="ui fluid vertical menu">
+            <div  class="item" th:each="type:${allType}" >
+                <a th:href="@{/type/{id}/msg(id=${type.type.id})}"  th:text="${type.type.name}">
+                </a>
+                <div class="ui blue basic left pointing label" th:text="${type.count}">13</div>
+            </div>
+
+        </div>
+    </div>
+</div>
+<!--人气博主-->
+<div th:fragment="topuser" class="ui segments toumin2">
+    <div class="ui secondary segment">
+        <div class="ui two column grid">
+            <div class="column">
+                <i class="blue idea icon"></i>人气博主
+            </div>
+        </div>
+    </div>
+    <div class="ui blue segment">
+        <div class="ui segment" th:each="user:${topUser}">
+
+            <div class="ui mini horizontal link list" >
+                <div class="item">
+                    <img th:src="@{${user.user.view}}" alt="" class="ui avatar image">
+                    <div class="content"><a th:href="@{/user/{id}/detail(id=${user.user.id})}" class="header" th:text="${user.user.name}">汪骏</a></div>
+                </div>
+
+                <div class="item">
+                    <i class="eye icon" ></i>浏览：<span th:text="${user.allVisit}"></span>
+                </div>
+                <div class="item">
+                    <i class="thumbs up outline icon" ></i>获赞：<span th:text="${user.allAppreciate}"></span>
+                </div>
+            </div>
+
+
+        </div>
+
+    </div>
+</div>
+<!--推荐-->
+<div th:fragment="toprecommend" class="ui segments m-margin-top-large ">
+    <div class="ui secondary segment ">
+        <i class="blue bookmark icon"></i>热门博客
+    </div>
+    <div class="ui segment" th:each="blog : ${topRecommend}">
+        <a href="#" th:href="@{/index/{id}/detail(id=${blog.id})}" target="_blank" class="m-black m-text-thin" th:text="${blog.title}">
+            用户故事（User Story）</a>
+    </div>
+
+</div>
+<!--底部-->
+<footer  th:fragment="footer" class="ui inverted vertical segment m-padded-tb-massive toumin">
+    <div class="ui center aligned container">
+        <div class="ui inverted divided stackable grid">
+            <div class="three wide column">
+                <div class="ui inverted link list">
+                    <div class="item">
+                        <img src="../static/images/lol-mangs.png" th:src="@{/images/lol-mangs.png}" class="ui rounded image" alt="" style="width: 110px">
+                    </div>
+                </div>
+            </div>
+            <div class="three wide column">
+                <h4 class="ui inverted header m-text-thin m-text-spaced " >推荐博客</h4>
+                <div class="ui inverted link list">
+                    <a href="#" class="item m-text-thin">靓仔</a>
+                    <a href="#" class="item m-text-thin">靓仔</a>
+                    <a href="#" class="item m-text-thin">靓仔</a>
+                </div>
+            </div>
+            <div class="three wide column">
+                <h4 class="ui inverted header m-text-thin m-text-spaced ">联系我</h4>
+                <div class="ui inverted link list">
+                    <a href="#" class="item m-text-thin">Email：wj15118940771@163.com</a>
+                    <a href="#" class="item m-text-thin">QQ：2392870473</a>
+                </div>
+            </div>
+            <div class="seven wide column">
+                <h4 class="ui inverted header m-text-thin m-text-spaced ">Blog</h4>
+                <p class="m-text-thin m-text-spaced m-opacity-mini">这是我的个人博客、会分享关于编程、写作、思考相关的任何内容，希望可以给来到这儿的人有所帮助...</p>
+            </div>
+        </div>
+        <div class="ui inverted section divider"></div>
+        <p class="m-text-thin m-text-spaced m-opacity-tiny">Copyright © 2020 - 2021 Designed by Wangjun</p>
+    </div>
+
+</footer>
+<th:block th:fragment="script">
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.2/dist/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/semantic-ui/2.2.4/semantic.min.js"></script>
+    <script src="//cdn.jsdelivr.net/npm/jquery.scrollto@2.1.2/jquery.scrollTo.min.js"></script>
+    <script src="../static/lib/prism/prism.js" th:src="@{/lib/prism/prism.js}"></script>
+    <script src="../static/lib/tocbot/tocbot.min.js" th:src="@{/lib/tocbot/tocbot.min.js}"></script>
+    <script src="../static/lib/qrcode/qrcode.min.js" th:src="@{/lib/qrcode/qrcode.min.js}"></script>
+    <script src="../static/lib/waypoints/jquery.waypoints.min.js" th:src="@{/lib/waypoints/jquery.waypoints.min.js}"></script>
+    <script src="../../static/lib/editormd/editormd.min.js" th:src="@{/lib/editormd/editormd.min.js}"></script>
+    <script>
+        $('#newblog-container').load(/*[[@{/footer/newblog}]]*/"/footer/newblog");
+       function gosearch(){
+            // $.get("/index",{
+            //     "query" : $("[name='query']").val(),
+            //
+            // },function (responseTxt, statusTxt, xhr) {
+            //     console.log(1233);
+            //     alert("数据: " +   "\n状态: ");
+            //
+            //     window.location.reload();
+            // });
+           var url =  document.getElementById("query").value;
+           window.location.href="/index/search?query="+url;
+
+        }
+        $(".ui.dropdown").dropdown({
+            on:'click' ,//鼠标悬浮显示，默认值是click
+            transition:'swing right', //设置动画效果
+            allowAdditions:true //允许添加新的菜单项
+        });
+
+        $('.menu.toggle').click(function () {
+            $('.m-item').toggleClass('m-mobile-hide');
+        });
+        $('.message .close')
+            .on('click', function () {
+                $(this)
+                    .closest('.message')
+                    .transition('fade');
+            });
+    </script>
+
+
+
+</th:block>
+
+</body>
+</html>

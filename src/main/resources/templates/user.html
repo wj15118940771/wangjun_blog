@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head th:replace="_fragments :: head(~{::title})">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>用户博客管理</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/semantic-ui/2.2.4/semantic.min.css">
+    <link rel="stylesheet" href="../../static/css/me.css"  th:href="@{/css/me.css}">
+</head>
+<body>
+
+<!--导航-->
+<nav th:replace="_fragments :: menu(0,${isLogin})" class="ui inverted attached segment m-padded-tb-mini">
+
+</nav>
+
+<!--中间-->
+<div class="m-padded-tb-large">
+    <div class="ui container">
+
+        <div class="ui stackable grid ">
+            <div class="ui success blue message" th:unless="${#strings.isEmpty(message)}">
+                <i class="close icon"></i>
+                <div class="header">提示：</div>
+                <p th:text="${message}">恭喜，操作成功！</p>
+            </div>
+
+            <div class="eleven wide column" th:if="${oneself!=0}">
+                <div class="ui top attached segment">
+                    <div class="ui middle aligned two column grid">
+                        <div class="column">
+                            <h3 class="ui blue header">个人信息</h3>
+                        </div>
+                        <div class="ui right aligned column">
+                            <button class="circular ui icon button" th:if="${oneself!=0&&isLogin==0}">
+                                <div id="follow-container" th:fragment="userfollow">
+                                    <div th:if="${isFollow==1}" name="userid"   th:onclick="userfollow([[${user.id}]])"><i class="icon heart" ></i>
+                                        <i>关注</i></div>
+                                    <div th:if="${isFollow!=1}" th:onclick="userunfollow([[${user.id}]])"><i class="icon red heart"></i>
+                                        <i>已关注</i></div>
+                                </div>
+                            </button>
+                        </div>
+
+                    </div>
+                </div>
+                <div class="ui centttt">
+                    <div class="ui attached  segment">
+                        <img class="ui  tiny circular image centered" th:src="@{${user.view}}">
+                        <div class="ui  horizontal divider header"> 头像 </div>
+                        <div class="marginnn" >
+                            账号： <a th:text="${user.account}">2392870473</a>
+                        </div>
+                        <div class="marginnn">
+                            昵称：<a   th:text="${user.name}"></a>
+                        </div>
+                        <div class="marginnn">
+                            邮箱：<a  th:text="${user.email}"></a>
+                        </div>
+                        <div class="marginnn">
+                            注册时间： <a   th:text="${#dates.format(user.createTime,'yyyy-MM-dd')}">2392870473</a>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+            <div class="eleven wide column" th:if="${oneself==0}">
+                <div class="ui top attached segment">
+                    <div class="ui middle aligned two column grid">
+                        <div class="column">
+                            <h3 class="ui blue header">个人信息</h3>
+                        </div>
+                        <div class="ui right aligned column">
+                            <button class="circular ui icon button" th:if="${oneself!=0&&isLogin==0}">
+
+                                <div th:id="follow-container" >
+                                    <div th:if="${isFollow==1}" name="userid"   th:onclick="userfollow([[${user.id}]])"><i class="icon heart" ></i>
+                                        <i>关注</i></div>
+                                    <div class="ui red" th:if="${isFollow!=1}" th:onclick="userunfollow([[${user.id}]])"><i class=" icon heart "></i>
+                                        <i>已关注</i></div>
+                                </div>
+
+                            </button>
+                        </div>
+
+                    </div>
+                </div>
+                <form id="user-form" name="user-form" th:object="${user}" th:action="@{/user/save}" method="post" class="ui form"  enctype="multipart/form-data">
+                    <input type="hidden" name="id" th:value="*{id}">
+                <div class="ui centttt">
+                    <div class="ui attached  segment">
+                        <input type="file" name="image" class="ui  tiny circular image centered" accept="image/*" style="display:none" id="uploadfile"/>
+                        <img class="ui  small  image centered "  id="image"  th:src="@{${user.view}}" >
+                        <div class="ui horizontal divider header"> 头像 </div>
+                        <div class="marginnn" >
+                            账号： <a th:text="${user.account}">2392870473</a>
+                        </div>
+
+                        <div class="marginnn">
+                            昵称：
+                            <div class="ui mini input" >
+                                <input type="text" name="name"  th:value="${user.name}">
+                            </div>
+                        </div>
+                        <div class="marginnn">
+                            邮箱：
+                            <div class="ui mini input"  >
+                                <input type="text" id="email" name="email" th:value="${user.email}">
+                            </div>
+                        </div>
+                        <div class="marginnn">
+                            注册时间： <a th:text="${#dates.format(user.createTime,'yyyy-MM-dd')}">2392870473</a>
+                        </div><div class="ui error mini message"></div>
+                        <div class="marginnn">
+                            <button type="button" class="ui button" onclick="window.history.go(-1)" >返回</button>
+                            <button type="button"  id="save-btn"  class="ui blue button">修改</button>
+                        </div>
+                    </div>
+
+                </div>
+                </form>
+            </div>
+            <div class="five wide column">
+                <div class="ui top attached segment">
+                    <div class="ui middle aligned  centttt grid">
+                        <div class=" column">
+                            <h3 class="ui blue header">作者相关</h3>
+                        </div>
+
+                    </div>
+                    <div class="ui horizontal divider header"> -- </div>
+                    <div class="ui secondary segment " th:each="blog : ${userBlog}">
+                        <a href="#" th:href="@{/index/{id}/detail(id=${blog.id})}" target="_blank" class="m-black m-text-thin" th:text="${blog.title}">
+                            用户故事（User Story）</a>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+
+    </div>
+</div>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<!--底部footer-->
+<footer  th:replace="_fragments :: footer" class="ui inverted vertical segment m-padded-tb-massive">
+
+</footer>
+
+<!--/*/<th:block th:replace="_fragments :: script">/*/-->
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.2/dist/jquery.min.js"></script>
+<!--/*/</th:block>/*/-->
+</body>
+
+</html>
+
+
+<script>
+    $('#user-form').form({
+        fields : {
+            mail : {
+                identifier: 'email',
+                rules: [{
+                    type : 'email',
+                    prompt: '请输入正确邮箱'
+                }]
+            }
+        }
+    });
+
+    function userfollow(obj){
+        $("#follow-container").load("/follow/userfollow",{
+            "id" : obj,
+        },function (responseTxt, statusTxt, xhr) {
+        });
+    };
+
+    function userunfollow(obj){
+        $("#follow-container").load("/follow/userunfollow",{
+            "id" : obj,
+        },function (responseTxt, statusTxt, xhr) {
+        });
+    };
+
+    $(function(){
+        $("#image").click(function(){
+            $("#uploadfile").click();
+        })
+        $("#uploadfile").change(function(){
+
+            var files=$(this)[0].files[0];    //获取文件信息
+            console.log(files);
+            if(files&&files.size<2240000)
+            {
+                var reader=new FileReader();  //调用FileReader
+                reader.onload=function(evt){   //读取操作完成时触发。
+                    $("#image").attr('src',evt.target.result)  //将img标签的src绑定为DataURL
+                    $("#image").attr('class',"images")  //
+                }
+                reader.readAsDataURL(files); //将文件读取为 DataURL(base64)
+            }
+            else{
+                $("[name='image']").val(""),
+                alert("上传失败");
+            }
+        })
+    });
+
+
+
+
+    $(".ui.dropdown").dropdown({
+        on:'click' ,//鼠标悬浮显示，默认值是click
+        transition:'swing right', //设置动画效果
+        allowAdditions:true //允许添加新的菜单项
+    });
+
+    $('.menu.toggle').click(function () {
+        $('.m-item').toggleClass('m-mobile-hide');
+    });
+
+    $('#save-btn').click(function () {
+        $('#user-form').submit();
+    });
+
+
+    $('#save-btn').click(function () {
+        $('#user-form').submit();
+    });
+
+</script>

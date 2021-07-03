@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wj.dao.ParentDictionaryMapper">
+    <insert id="addParentDictionary" parameterType="ParentDictionary">
+       insert into parentdictionary (`id`,`name`,`createTime`,`status`)
+             values (#{id},#{name},#{createTime},#{status})
+   </insert>
+
+    <update id="deleteParentDictionary" parameterType="ParentDictionary">
+        update parentdictionary set status = 1 where id=#{id}
+    </update>
+
+    <update id="updateParentDictionary" parameterType="ParentDictionary">
+        update parentdictionary set
+        <trim suffixOverrides=",">
+            <if test="name !=null ">
+                name=#{name},
+            </if>
+            <if test="createTime !=null ">
+                createTime=#{createTime},
+            </if>
+            <if test="status !=null ">
+                status=#{status},
+            </if>
+        </trim> where id =#{id}
+    </update>
+</mapper>

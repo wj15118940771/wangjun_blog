@@ -1,0 +1,276 @@
+.one{
+    color: #fdfcff;
+}
+.add {
+    border: 1px solid;
+    width: 100px;
+    height: 100px;
+    color: #ccc;
+    transition: color .25s;
+    position: relative;
+}
+
+.add::before{
+    content: '';
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 80px;
+    margin-left: -40px;
+    margin-top: -5px;
+    border-top: 10px solid;
+}
+.add::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    height: 80px;
+    margin-left: -5px;
+    margin-top: -40px;
+    border-left: 10px solid;
+}
+
+.add:hover {
+    color: blue;
+}
+
+
+.typeimage{
+    width: 100px;
+    height: 100px;
+}
+
+.toumin2{
+    background: rgba(49, 48, 50, 0) !important;
+}
+.toumin1{
+    background: rgba(252, 252, 252, 0.8) !important;
+}
+
+.toumin{
+    background: rgba(73, 69, 107, 0.7) !important;
+}
+
+.centttt{
+    text-align: center;
+}
+.marginnn{
+    margin: 2em 0em 2em 0em;
+}
+
+.m-container-small {
+    max-width: 60em !important;
+    margin: auto !important;
+}
+.m-padded-tb-massive {
+    padding-top: 5em !important;
+    padding-bottom: 5em !important;
+}
+
+ul.comment1 li {display: inline;}
+
+ul.comment1 li a {
+    color: black;
+    font-size: 12px;
+}
+
+ul.comment1 li a.active {
+    color: #1bb1cd;
+}
+
+
+.chaolianjie{
+    display: block;
+    width: 100%;
+    height: auto;
+}
+
+.images{
+    width: auto;
+    height: auto;
+    max-width: 150px;
+    max-height: 150px;
+}
+
+body{
+    height: 100%;
+    position: relative;
+    min-width: 100%;
+    background-size: cover;
+    background-attachment: fixed;
+    background-position: center 50%;
+    background-repeat: no-repeat;
+    margin-bottom: 0px;
+    background-image: url("../images/lol_dragon.jpg");
+    background-repeat: no-repeat;
+}
+
+.m-padded-mini {
+    padding: 0.2em !important;
+}
+
+.m-padded-tiny {
+    padding: 0.3em !important;
+}
+.m-padded {
+    padding: 1em !important;
+}
+.m-padded-tb-mini {
+    padding-top: 0.2em !important;
+    padding-bottom: 0.2em !important;
+
+}
+.m-padded-tb-tiny {
+    padding-top: 0.3em !important;
+    padding-bottom: 0.3em !important;
+}
+.m-padded-tb-small {
+    padding-top: 0.5em !important;
+    padding-bottom: 0.5em !important;
+}
+.m-padded-tb {
+    padding-top: 1em !important;
+    padding-bottom: 1em !important;
+}
+.m-padded-tb-large {
+    padding-top: 2em !important;
+    padding-bottom: 2em !important;
+}
+.m-padded-tb-big {
+    padding-top: 3em !important;
+    padding-bottom: 3em !important;
+}
+.m-padded-tb-huge {
+    padding-top: 4em !important;
+    padding-bottom: 4em !important;
+}
+.m-padded-tb-massive {
+    padding-top: 5em !important;
+    padding-bottom: 5em !important;
+}
+
+
+.m-padded-lr-responsive {
+    padding-left: 4em !important;
+    padding-right: 4em !important;
+}
+
+/*-------text -----*/
+
+.m-text {
+    font-weight: 300 !important;
+    letter-spacing: 1px !important;
+    line-height: 1.8;
+}
+.m-text-thin {
+    font-weight: 300 !important;
+}
+.m-text-spaced {
+    letter-spacing: 1px !important;
+}
+.m-text-lined {
+    line-height: 1.8;
+}
+
+/*-----margin------*/
+
+.m-margin-top-small {
+    margin-top:0.5em !important;
+}
+.m-margin-top {
+    margin-top: 1em !important;
+}
+.m-margin-top-large {
+    margin-top: 2em !important;
+}
+
+.m-margin-tb-tiny {
+    margin-top: 0.3em !important;
+    margin-bottom: 0.3em !important;
+}
+
+.m-margin-bottom-small {
+    margin-bottom: 0.5em !important;
+
+}
+
+/*-----opacity------*/
+.m-opacity-mini {
+    opacity: 0.8 !important;
+}
+.m-opacity-tiny {
+    opacity: 0.6 !important;
+}
+/*------position---*/
+
+.m-right-top {
+    position: absolute;
+    top:0;
+    right: 0;
+}
+
+/*------display------*/
+.m-inline-block {
+    display: inline-block !important;
+}
+
+
+/*-----container*/
+
+.m-container {
+    max-width: 72em !important;
+    margin: auto !important;
+}
+.m-container-small {
+    max-width: 100em !important;
+    margin: auto !important;
+}
+
+/*------shadow------*/
+.m-shadow-small {
+    -webkit-box-shadow: 0 4px 8px rgba(0,0,0,0.2) !important;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2) !important;
+}
+
+/*------positon-----*/
+
+.m-fixed {
+    position: fixed !important;
+    z-index: 10 !important;
+}
+
+.m-right-bottom {
+    bottom: 0 !important;
+    right: 0 !important;
+}
+
+
+/*-----color-----*/
+.m-black {
+    color: #333 !important;
+}
+
+.m-mobile-show {
+   display: none !important;
+}
+
+@media screen and (max-width: 768px){
+    .m-mobile-hide {
+        display: none !important;
+    }
+    .m-mobile-show {
+        display: block !important;
+    }
+    .m-padded-lr-responsive {
+        padding-left: 0 !important;
+        padding-right: 0 !important;
+    }
+    .m-mobile-lr-clear {
+        padding-left: 0 !important;
+        padding-right: 0 !important;
+    }
+    .m-mobile-wide {
+        width: 100% !important;
+    }
+}

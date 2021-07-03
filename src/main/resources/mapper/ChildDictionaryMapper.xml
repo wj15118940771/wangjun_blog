@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wj.dao.ChildDictionaryMapper">
+
+    <sql id="Base_Column" >
+	id,name,parentID,createTime,status,picture
+    </sql>
+
+    <sql id="Example_Where_Clause">
+        where 1=1
+        <trim suffixOverrides=",">
+            <if test="id !=null and id !=''  ">
+                and id=#{id}
+            </if>
+            <if test="name !=null and name !=''  ">
+                and name=#{name}
+            </if>
+            <if test="parentID !=null and parentID !=''  ">
+                and  parentID=#{parentID}
+            </if>
+            <if test="createTime !=null  and createTime !='' ">
+                and  createTime=#{createTime}
+            </if>
+            <if test="picture !=null  and picture !='' ">
+                and  picture=#{picture}
+            </if>
+        </trim>
+    </sql>
+
+
+    <insert id="addChildDictionary" parameterType="ChildDictionary">
+       insert into childdictionary (`id`,`name`,`parentID`,`createTime`,`status`,`picture`)
+             values (#{id},#{name},#{parentID},#{createTime},#{status},#{picture})
+   </insert>
+
+    <update id="deleteChildDictionary" parameterType="ChildDictionary">
+        update childDictionary set status = 1 where id=#{id}
+    </update>
+
+    <update id="updateChildDictionary" parameterType="ChildDictionary">
+        update childdictionary set
+        <trim suffixOverrides=",">
+            <if test="name !=null ">
+                name=#{name},
+            </if>
+            <if test="parentID !=null ">
+                parentID=#{parentID},
+            </if>
+            <if test="createTime !=null ">
+                createTime=#{createTime},
+            </if>
+            <if test="status !=null ">
+                status=#{status},
+            </if>
+            <if test="picture !=null ">
+                picture=#{picture},
+            </if>
+        </trim> where id =#{id}
+    </update>
+
+    <select id="listChildDictionary"  parameterType="ChildDictionary" resultType="ChildDictionary">
+        select  <include refid="Base_Column"></include>
+        from childdictionary
+        <include refid="Example_Where_Clause"></include> and status=0 ORDER BY createtime desc
+    </select>
+
+    <select id="getByID"  parameterType="String" resultType="ChildDictionary">
+        select  <include refid="Base_Column"></include>
+        from childdictionary
+        where id =#{id}
+    </select>
+
+    <select id="getAllType"   resultType="ChildDictionary">
+        select  <include refid="Base_Column"></include>
+        from childdictionary
+        where parentid="123da1"
+    </select>
+</mapper>

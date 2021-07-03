@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wj.dao.UserMapper">
+
+    <sql id="Base_Column" >
+	id,account,password,name,view,email,createTime,type,status,uuid
+    </sql>
+
+    <sql id="Example_Where_Clause">
+        where 1=1
+        <trim suffixOverrides=",">
+            <if test="id !=null and id !=''  ">
+                and id=#{id}
+            </if>
+            <if test="account !=null and account !=''  ">
+               and account=#{account}
+            </if>
+            <if test="password !=null and password !=''  ">
+                and  password=#{password}
+            </if>
+            <if test="name !=null  and name !='' ">
+                and  name=#{name}
+            </if>
+            <if test="view !=null and view !=''  ">
+                and  view=#{view}
+            </if>
+            <if test="email !=null and email !='' ">
+                and  email=#{email}
+            </if>
+            <if test="createTime !=null  and createTime !='' ">
+                and createTime=#{createTime}
+            </if>
+            <if test="type !=null  and type !='' ">
+                and type=#{type}
+            </if>
+            <if test="status !=null and status !=''  ">
+                and  status=#{status}
+            </if>
+            <if test="uuid !=null and uuid !=''  ">
+                and  uuid=#{uuid}
+            </if>
+
+        </trim>
+    </sql>
+
+
+
+    <insert id="addUser" parameterType="User">
+       insert into user (`id`,`account`,`password`,`name`,`view`,`email`,`createTime`,`type`,`status`,`uuid`)
+             values (#{id},#{account},#{password},#{name},#{view},#{email},#{createTime},#{type},#{status},#{uuid})
+   </insert>
+
+    <update id="deleteUser" parameterType="User">
+        update user set status = 1 where id=#{id}
+    </update>
+
+    <update id="updateUser" parameterType="User">
+        update user set
+        <trim suffixOverrides=",">
+            <if test="account !=null ">
+                account=#{account},
+            </if>
+            <if test="name !=null ">
+                name=#{name},
+            </if>
+            <if test="view !=null ">
+                view=#{view},
+            </if>
+            <if test="email !=null ">
+                email=#{email},
+            </if>
+            <if test="createTime !=null ">
+                createTime=#{createTime},
+            </if>
+            <if test="type !=null ">
+                type=#{type},
+            </if>
+            <if test="status !=null ">
+                status=#{status},
+            </if>
+            <if test="password !=null and password !=''">
+                password=#{password},
+            </if>
+            <if test="uuid !=null and uuid !=''">
+                uuid=#{uuid},
+            </if>
+
+        </trim>where id =#{id}
+    </update>
+
+    <select id="listUser" parameterType="User" resultType="User">
+        select  <include refid="Base_Column"></include>
+        from user
+        <include refid="Example_Where_Clause"></include> and status=0 ORDER BY createtime desc
+    </select>
+
+    <select id="getUserByAccount" parameterType="String" resultType="User">
+        select <include refid="Base_Column"></include>
+        from user where account=#{account} and status =0
+    </select>
+
+    <select id="getUserById" parameterType="String" resultType="User">
+        select <include refid="Base_Column"></include>
+        from user where id=#{id}
+    </select>
+
+    <select id="sumUser"  resultType="User">
+        select a.*
+        from user a left join blog b on a.id = b.userid
+        where a.status =0 and b.status=0
+        group by a.id
+        ORDER BY sum(appreciate) desc
+        LIMIT 3
+    </select>
+
+    <select id="getAll"  resultType="User">
+       select *
+       from user
+	   ORDER BY createtime desc
+    </select>
+
+    <select id="getUserByAccountUseThird" parameterType="String" resultType="User">
+        select <include refid="Base_Column"></include>
+        from user where account=#{account}
+    </select>
+</mapper>

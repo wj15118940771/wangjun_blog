@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head th:replace="_fragments :: head(~{::title})">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>用户博客详情</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/semantic-ui/2.2.4/semantic.min.css">
+    <link rel="stylesheet" href="../../static/css/me.css"  th:href="@{/css/me.css}">
+</head>
+<body>
+
+<!--导航-->
+<nav th:replace="_fragments :: menu(0,${isLogin})" class="ui inverted attached segment m-padded-tb-mini">
+</nav>
+<!--中间-->
+<div class="m-padded-tb-large">
+    <div class="ui container">
+        <div class="ui stackable grid">
+            <!--左边-->
+
+            <div class="eleven wide column">
+                <!--blog详情页面-->
+                <div class="ui top attached segment">
+                    <div class="ui mini horizontal link list">
+                        <div class="item">
+                            <img th:src="@{${blogMsg.author.view}}" alt="" class="ui avatar image">
+                            <div class="content"><a  th:href="@{/user/{id}/detail(id=${blogMsg.author.id})}" class="header" th:text="${blogMsg.author.name}">李仁密</a></div>
+                        </div>
+                        <div class="item">
+                            <i class="calendar icon" >
+                            </i>
+                            <a  th:text="${#dates.format(blogMsg.blog.updateTime,'yyyy-MM-dd HH:mm:ss')}">545454</a>
+                        </div>
+                        <div class="item">
+                            <i class="eye icon" ></i>
+                            <a th:text="${blogMsg.blog.visit}"></a>
+                        </div>
+                        <div class="item">
+                            <i class="thumbs up outline icon" ></i>
+                            <a th:text="${blogMsg.blog.appreciate}"></a>
+                        </div>
+                        <div class="ui item right aligned basic segment">
+                            分类:      <a th:href="@{/type/{id}/msg(id=${blogMsg.blog.typeID})}" class="mini ui blue basic label" th:text="${blogMsg.blog.typeName}">技术前沿</a>
+                        </div>
+
+                    </div>
+                </div>
+
+                <div class="ui attached segment">
+                    <!--内容-->
+                    <div class="ui right aligned basic segment">
+                        <div class="ui orange basic label" th:text="${blogMsg.blog.isReprint}">原创</div>
+                    </div>
+                    <h2 class="ui center aligned header" th:text="${blogMsg.blog.title}">关于刻意练习的清单</h2>
+                    <br>
+                    <div id="context" class="typo typo-selection js-toc-content m-padderd-lr-responsive m-padded-tb-large" th:utext="${blogMsg.blog.context}"></div>
+
+                    <div class="m-padded-lr-responsive">
+                        <a class="ui basic blue left pointing label" th:each="tag : ${tags}" th:text="${tag}">方法论</a>
+                    </div>
+                </div>
+                <div class="ui attached positive message">
+
+                    <div class="ui  basic  segment">
+
+                        <div class="ui  horizontal link list">
+                            <div class="item">
+                                <i class="eye icon blue"  ></i>浏览数:
+                                <a th:text="${blogMsg.blog.visit}"></a>
+                            </div>
+                            <div class="item">
+                                <div id="appreciate" th:fragment="appreciate"  th:onclick="appreciate([[${blogMsg.blog.id}]],[[${blogMsg.blog.appreciate}]])">
+                                    <i class="thumbs up red icon" ></i>点赞：
+                                    <a th:text="${blogMsg.blog.appreciate}">daw</a>
+                                </div>
+
+                            </div>
+                            <div class="item">
+                                <i class="comment alternate green icon" ></i>评论数：
+                                <a th:text="${commentCount}">wa</a>
+                            </div>
+<!--                            <div class="item">-->
+<!--                                <i class="share icon"></i>转载-->
+<!--                            </div>-->
+                            <div class="item" th:if="${isLogin==0}">
+                                <div id="follow-container" th:fragment="blogfollow">
+                                    <div th:if="${isFollow==0}" th:onclick="blogunfollow([[${blogMsg.blog.id}]])"><i class="icon red heart"></i>已收藏</div>
+                                    <div th:if="${isFollow!=0}" th:onclick="blogfollow([[${blogMsg.blog.id}]])"><i class="icon heart"></i>收藏</div>
+                                </div>
+                            </div>
+
+                        </div>
+
+
+                    </div>
+                </div>
+                <div class="ui bottom attached segment" th:if="${blogMsg.blog.isComment=='on'}">
+
+                    <div id="comment-container"  class="ui blue segment">
+                        <div th:fragment="commentList">
+                            <div class="ui threaded comments" style="max-width: 100%;">
+                                <h3 class="ui dividing header">评论</h3>
+
+                                <div class="comment"  th:each="comment,iterStat : ${page.list}" >
+
+                                        <a class="avatar">
+                                            <img th:src="@{${comment.parentComment.user.view}}" >
+                                        </a>
+                                        <div class="content">
+                                            <a  th:href="@{/user/{id}/detail(id=${comment.parentComment.user.id})}" class="author" >
+                                                <span th:text="${comment.parentComment.user.name}">Matt</span>
+                                                <div class="ui mini basic blue left pointing label m-padded-mini" th:if="${blogMsg.author.id}==${comment.parentComment.user.id}">博主</div>
+                                            </a>
+                                            <div class="metadata">
+                                                <span class="date" th:text="${#dates.format(comment.parentComment.comment.createTime,'yyyy-MM-dd HH:mm')}">Today at 5:42PM</span>
+                                            </div>
+                                            <div class="text" th:text="${comment.parentComment.comment.context}">
+                                                How artistic!
+                                            </div>
+                                            <div class="actions">
+                                                <a class="reply" data-nickname="2132" data-atarget="1" data-aparentfloor="Matt" th:attr="data-atarget=${comment.parentComment.user.id},data-aparentfloor=${comment.parentComment.comment.floor},data-nickname=${comment.parentComment.user.name}" onclick="reply(this)">回复</a>
+                                            </div>
+                                        </div>
+                                        <div th:id="${comment.parentComment.comment.id}">
+                                           <div  th:fragment="${comment.parentComment.comment.id}" >
+                                               <div  class="comments" th:if="${comment.childPageInFo.total}>0" >
+                                                   <div class="comment" th:each="reply,iterStat : ${comment.childPageInFo.list}"  >
+                                                       <a class="avatar">
+                                                           <img th:src="@{${reply.user.view}}" >
+                                                       </a>
+                                                       <div class="content">
+                                                           <a class="author" >
+                                                               <a th:href="@{/user/{id}/detail(id=${reply.user.id})}" th:text="${reply.user.name}">小红</a>
+                                                               <div class="ui mini basic blue left pointing label m-padded-mini" th:if="${blogMsg.author.id}==${reply.user.id}">博主</div>
+                                                               &nbsp;<a th:href="@{/user/{id}/detail(id=${reply.target.id})}" th:text="|@ ${reply.target.name}|" class="m-blue">@ 小白</a>
+                                                           </a>
+                                                           <div class="metadata">
+                                                               <span class="date" th:text="${#dates.format(reply.comment.createTime,'yyyy-MM-dd HH:mm')}">Today at 5:42PM</span>
+                                                           </div>
+                                                           <div class="text" th:text="${reply.comment.context}">
+                                                               How artistic!
+                                                           </div>
+                                                           <div class="actions">
+                                                               <a class="reply"  data-nickname="2132" data-atarget="1" data-aparentfloor="Matt" th:attr="data-atarget=${reply.user.id},data-aparentfloor=${comment.parentComment.comment.floor},data-nickname=${reply.user.name}" onclick="reply(this)">回复</a>
+                                                           </div>
+                                                       </div>
+                                                   </div>
+                                                   <div class="block">
+                                                       <ul class="comment1">
+                                                           <li><a href="#" th:onclick="nextpage1([[${comment.parentComment.comment.id}]],[[${page.pageNum}]],[[1]])">首页</a></li>
+                                                           | <li><a href="#" th:onclick="nextpage1([[${comment.parentComment.comment.id}]],[[${page.pageNum}]],[[${comment.childPageInFo.hasPreviousPage}?${comment.childPageInFo.prePage}:1]])">上一页</a></li>
+                                                           |<li><a href="#" th:onclick="nextpage1([[${comment.parentComment.comment.id}]],[[${page.pageNum}]],[[${comment.childPageInFo.hasNextPage}?${comment.childPageInFo.nextPage}:${comment.childPageInFo.pages}]])">下一页</a></li>
+                                                           |<li><a href="#" th:onclick="nextpage1([[${comment.parentComment.comment.id}]],[[${page.pageNum}]],[[${comment.childPageInFo.pages}]])">尾页</a></li>
+                                                           |<li>共<a href="#" th:text="${comment.childPageInFo.pages}">123</a>页</li>
+                                                           |<li>当前第<a href="#" th:text="${comment.childPageInFo.pageNum}">2</a>页</li>
+                                                           | <li>共<a href="#" th:text="${comment.childPageInFo.total}">2</a>条记录</li>
+                                                       </ul>
+                                                   </div>
+                                               </div>
+
+
+                                           </div>
+                                       </div>
+
+                                </div>
+                                <tr>
+                                    <th colspan="7" >
+                                        <div class="ui mini pagination menu" th:if="${page.pages}>1">
+                                            <div class="ui mini pagination menu" th:if="${page.pages}>1">
+                                                <div class="ui item mini button"><a th:onclick="nextpage([[${blogMsg.blog.id}]],[[1]])">首页</a></div>
+                                                <div class="ui item mini button"><a  th:onclick="nextpage([[${blogMsg.blog.id}]],[[${page.hasPreviousPage}?${page.prePage}:1]])" >上一页</a></div>
+                                                <div class="ui item mini button"><a th:onclick="nextpage([[${blogMsg.blog.id}]],[[${page.hasNextPage}?${page.nextPage}:${page.pages}]])" >下一页</a></div>
+                                                <div class="ui item mini button"><a th:onclick="nextpage([[${blogMsg.blog.id}]],[[${page.pages}]])" >尾页</a></div>
+                                            </div>
+                                        </div>
+                                        <div class="ui mini segment m-inline-block">
+                                            <p >当前第<span th:text="${page.pageNum}"></span>页，总<span th:text="${page.pages}"></span>页，共<span th:text="${page.total}"></span>条记录</p>
+                                        </div>
+                                    </th>
+                                </tr>
+
+                            </div>
+                        </div>
+                    </div>
+                    <div id="comment-form" class="ui form"  th:unless="${isLogin!=0}">
+                        <input type="hidden" name="blogid" th:value="${blogMsg.blog.id}">
+                        <input type="hidden" name="parentfloor" value="-1">
+                        <input type="hidden" name="target" value="-1" th:value="${blogMsg.author.id}">
+                        <input type="hidden" name="floor" value="-1">
+
+                        <div class="field">
+                            <textarea name="context" placeholder="请输入评论信息..."></textarea>
+                        </div>
+                        <div class="ui error mini message"></div>
+                        <div class="fields">
+                            <div class="field  m-margin-bottom-small m-mobile-wide">
+                                <button id="commentpost-btn" type="button" class="ui blue button m-mobile-wide"><i class="edit icon"></i>发布</button>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="ui visible message" th:unless="${isLogin==0}" >
+                        <a th:href="@{/}">登陆后可评论，点击登陆</a>
+                    </div>
+                </div>
+                <div class="ui visible message" th:if="${blogMsg.blog.isComment!='on'}" >
+                    <a >博主未开启评论~</a>
+                </div>
+            </div>
+
+
+
+            <!--右边-->
+            <div class="five wide column">
+                <!--分类-->
+                <div th:replace="_fragments :: alltype" class="ui segments">
+                </div>
+                <!--人气博主-->
+                <div th:replace="_fragments :: topuser" class="ui segments">
+                </div>
+                <!--热门博客-->
+                <div th:replace="_fragments :: toprecommend" class="ui segments">
+                </div>
+
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--底部-->
+
+<footer th:replace="_fragments :: footer" class="ui inverted vertical segment m-padded-tb-massive">
+</footer>
+
+<!--/*/<th:block th:replace="_fragments :: script">/*/-->
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.2/dist/jquery.min.js"></script>
+<!--/*/</th:block>/*/-->
+<script >
+    function nextpage1(fragmentandparentid,parentPagenum,childPagenum){
+        var a = fragmentandparentid;
+        $("#comment-container").load("/index/comment/child",{
+            'parentPagenum':parentPagenum,
+            'parentid':fragmentandparentid,
+            'childPagenum':childPagenum,
+        },function (responseTxt, statusTxt, xhr) {
+            $(window).scrollTo($('#'+a),500);
+
+        });
+    };
+
+    function nextpage(blogid,pagenum){
+        $("#comment-container").load("/index/comment/commentredirectcomment",{
+            "blogid":blogid,
+            "pagenum":pagenum
+        },function (responseTxt, statusTxt, xhr) {
+            $(window).scrollTo($('#comment-container'),500);
+        });
+    };
+
+    function appreciate(blogid,appreciate){
+
+        $("#appreciate").load("/index/appreciate",{
+            "blogid" : blogid,
+            "appreciate" : appreciate,
+        },function (responseTxt, statusTxt, xhr) {
+        });
+    };
+
+    function blogfollow(obj){
+        var aa = "follow-container";
+        $("#follow-container").load("/follow/blogfollow",{
+            "id" : obj,
+        },function (responseTxt, statusTxt, xhr) {
+        });
+    };
+
+    function blogunfollow(obj){
+        $("#follow-container").load("/follow/blogunfollow",{
+            "id" : obj,
+        },function (responseTxt, statusTxt, xhr) {
+        });
+    };
+
+    $(".ui.dropdown").dropdown({
+        on:'click' ,//鼠标悬浮显示，默认值是click
+        transition:'swing right', //设置动画效果
+        allowAdditions:true //允许添加新的菜单项
+    });
+
+    $('.menu.toggle').click(function () {
+        $('.m-item').toggleClass('m-mobile-hide');
+    });
+    $('.ui.form').form({
+        fields : {
+            title : {
+                identifier: 'context',
+                rules: [{
+                    type : 'empty',
+                    prompt: '请输入评论内容'
+                }]
+            }
+        }
+    });
+
+    $('#commentpost-btn').click(function () {
+        var boo = $('.ui.form').form('validate form');
+        if (boo) {
+            console.log('校验成功');
+            postData();
+        } else {
+            console.log('校验失败');
+        }
+
+    });
+
+    function postData() {
+        $("#comment-container").load("/index/comment",{
+            "parentFloor" : $("[name='parentfloor']").val(),
+            "blogID" : $("[name='blogid']").val(),
+            "context" : $("[name='context']").val(),
+            "target" : $("[name='target']").val(),
+            "floor" : $("[name='floor']").val()
+        },function (responseTxt, statusTxt, xhr) {
+            $(window).scrollTo($('#comment-container'),500);
+            clearContent();
+        });
+    }
+
+    function clearContent() {
+        $("[name='context']").val('');
+        $("[name='parentComment.id']").val(-1);
+        $("[name='context']").attr("placeholder", "请输入评论信息...");
+        $("[name='parentfloor']").val(-1);
+        $("[name='target']").val(-1);
+        $("[name='floor']").val(-1);
+
+    }
+
+    function reply(obj) {
+        var targets = $(obj).data('atarget');
+        var parentfloors = $(obj).data('aparentfloor');
+        var nickname = $(obj).data('nickname');
+        $("[name='context']").attr("placeholder", "@"+nickname).focus();
+        $("[name='parentfloor']").val(parentfloors),
+            $("[name='target']").val(targets);
+        $(window).scrollTo($('#comment-form'),500);
+    }
+
+</script>
+</body>
+
+</html>
+
+

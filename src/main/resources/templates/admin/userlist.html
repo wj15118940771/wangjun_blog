@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head th:replace="_fragments :: head(~{::title})">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>用户博客管理</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/semantic-ui/2.2.4/semantic.min.css">
+    <link rel="stylesheet" href="../../static/css/me.css"  th:href="@{/css/me.css}">
+</head>
+<body>
+
+<!--导航-->
+<nav th:replace="admin/_fragments :: menu(1)" class="ui inverted attached segment m-padded-tb-mini">
+</nav>
+
+<!--中间-->
+<div  class="m-container-small m-padded-tb-big">
+    <div class="ui container">
+        <div class="ui success  blue message" th:unless="${#strings.isEmpty(message)}">
+            <i class="close icon"></i>
+            <div class="header">提示：</div>
+            <p th:text="${message}">恭喜，操作成功！</p>
+        </div>
+        <table class="ui compact blue table">
+            <thead>
+            <tr>
+                <th></th>
+                <th>账号</th>
+                <th>昵称</th>
+                <th>邮箱</th>
+                <th>创建时间</th>
+                <th>类型(点击切换权限)</th>
+                <th>状态(点击删除/激活)</th>
+                <th>重置密码</th>
+
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="user,iterStat : ${page.list}">
+                <td th:text="${iterStat.count}">1</td>
+                <td>
+                    <a th:text="${user.account}" th:href="@{/user/{id}/detail(id=${user.id})}">昵称</a>
+                </td>
+                <td >
+                    <img  alt="" class="ui avatar image" th:src="@{${user.view}}">
+                    <a th:text="${user.name}" th:href="@{/user/{id}/detail(id=${user.id})}">刻意练习清单</a>
+                </td>
+                <td>
+                    <a th:text="${user.email}" >1邮箱</a>
+                </td>
+                <td>
+                    <a th:text="${#dates.format(user.createTime,'yyyy-MM-dd HH:mm:ss')}" >创建时间</a>
+                </td>
+                <td>
+                    <a th:text="${user.type==0?'普通用户':'管理员'}" th:href="@{/admin/user/type/(userid=${user.id})}">类型</a>
+                </td>
+                <td>
+                    <a th:text="${user.status==0?'激活':'注销'}" th:href="@{/admin/user/status/(userid=${user.id})}">状态</a>
+                </td>
+
+                <td>
+                    <a  class="ui mini red basic button" th:href="@{/admin/user/reset/(userid=${user.id})}">重置</a>
+                </td>
+
+            </tr>
+            </tbody>
+
+            <tr>
+
+                <th colspan="7" >
+                    <div class="ui mini pagination menu" th:if="${page.pages}>1">
+                        <div class="ui mini pagination menu" th:if="${page.pages}>1">
+                            <div class="ui item mini button"><a th:href="@{/admin/user}">首页</a></div>
+                            <div class="ui item mini button"><a th:href="@{/admin/user(pagenum=${page.hasPreviousPage}?${page.prePage}:1)}">上一页</a></div>
+                            <div class="ui item mini button"><a th:href="@{/admin/user(pagenum=${page.hasNextPage}?${page.nextPage}:${page.pages})}">下一页</a></div>
+                            <div class="ui item mini button"><a th:href="@{/admin/user(pagenum=${page.pages})}">尾页</a></div>
+                        </div>
+                    </div>
+                    <div class="ui mini segment m-inline-block">
+                        <p >当前第<span th:text="${page.pageNum}"></span>页，总<span th:text="${page.pages}"></span>页，共<span th:text="${page.total}"></span>条记录</p>
+                    </div>
+                </th>
+
+            </tr>
+            </tfoot>
+        </table>
+    </div>
+</div>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<!--底部footer-->
+<footer  th:replace="_fragments :: footer" class="ui inverted vertical segment m-padded-tb-massive">
+</footer>
+
+<!--/*/<th:block th:replace="_fragments :: script">/*/-->
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.2/dist/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/semantic-ui/2.2.4/semantic.min.js"></script>
+<script src="../../static/lib/editormd/editormd.min.js"></script>
+<!--/*/</th:block>/*/-->
+</body>
+
+</html>

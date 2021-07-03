@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head th:replace="_fragments :: head(~{::title})">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>用户博客管理</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/semantic-ui/2.2.4/semantic.min.css">
+    <link rel="stylesheet" href="../../static/css/me.css"  th:href="@{/css/me.css}">
+</head>
+<body>
+
+<!--导航-->
+<nav th:replace="_fragments :: menu(5,${isLogin})" class="ui inverted attached segment m-padded-tb-mini">
+</nav>
+
+<!--中间-->
+<div  class="m-container-small m-padded-tb-big">
+    <div class="ui container">
+        <div class="ui success blue message" th:unless="${#strings.isEmpty(message)}">
+            <i class="close icon"></i>
+            <div class="header">提示：</div>
+            <p th:text="${message}">恭喜，操作成功！</p>
+        </div>
+        <input type="hidden" name="userid" value="0">
+        <table class="ui compact blue table">
+            <thead>
+            <tr>
+                <th></th>
+                <th>用户</th>
+                <th>取消关注</th>
+                <th>更新情况</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="follow,iterStat : ${page.list}">
+                <td th:text="${iterStat.count}">1</td>
+                <td >
+                    <img  alt="" class="ui avatar image" th:src="@{${follow.user.view}}">
+                    <a th:text="${follow.user.name}" th:href="@{/user/{id}/detail(id=${follow.user.id})}">刻意练习清单</a>
+                </td>
+
+                <td>
+                    <a href="#" th:href="@{/follow/{id}/deleteuser(id=${follow.follow.id})}"  class="ui mini red basic button">取消关注</a>
+                </td>
+                <td>
+                    <a class="ui small blue basic button" th:onclick="news([[${follow.user.id}]],1)" th:text="${follow.updateMsgs.total}+'news'"> </a>
+                </td>
+            </tr>
+            </tbody>
+            <tfoot>
+            <tr>
+
+                <th colspan="7" >
+                    <div class="ui mini pagination menu" th:if="${page.pages}>1">
+                        <div class="ui mini pagination menu" th:if="${page.pages}>1">
+                            <div class="ui item mini button"><a th:href="@{/follow/user}">首页</a></div>
+                            <div class="ui item mini button"><a th:href="@{/follow/user(pagenum=${page.hasPreviousPage}?${page.prePage}:1)}">上一页</a></div>
+                            <div class="ui item mini button"><a th:href="@{/follow/user(pagenum=${page.hasNextPage}?${page.nextPage}:${page.pages})}">下一页</a></div>
+                            <div class="ui item mini button"><a th:href="@{/follow/user(pagenum=${page.pages})}">尾页</a></div>
+                        </div>
+                    </div>
+                    <div class="ui mini segment m-inline-block">
+                        <p >当前第<span th:text="${page.pageNum}"></span>页，总<span th:text="${page.pages}"></span>页，共<span th:text="${page.total}"></span>条记录</p>
+                    </div>
+                    <a href="#" th:href="@{/follow/user/updateMsg/clearall}"  class="ui mini right floated red basic button">清空</a>
+                </th>
+
+            </tr>
+            </tfoot>
+        </table>
+        <div class="ui large modal">
+            <div class="header">
+                用户的更新
+            </div>
+            <a class="close right icon" th:href="@{/follow/user}"><i ></i>✖</a>
+            <div>
+                <table class="ui compact blue table">
+                    <thead>
+                    <tr>
+                        <th></th>
+                        <th>标题</th>
+                        <th>更新时间</th>
+                        <th>更新情况</th>
+                        <th>标记</th>
+                    </tr>
+                    </thead>
+                    <tbody id="updateMsg" >
+                    <div th:fragment="updateMsg">
+                        <tr   th:each="updateMsg,iterStat : ${page1.list}">
+                            <td th:text="${iterStat.count}">1</td>
+                            <td >
+                                <a th:text="${updateMsg.blog.title}" th:href="@{/follow/user/updateMsg/done(updateid=${updateMsg.updateMsg.id},blogid=${updateMsg.blog.id})}" >刻意练习清单</a>
+                            </td>
+
+                            <td>
+                                <a th:text="${#dates.format(updateMsg.updateMsg.updateTime,'yyyy-MM-dd HH:mm:ss')}" ></a>
+                            </td>
+                            <td>
+                                <a th:text="${updateMsg.updateMsg.type}">new</a>
+                            </td>
+                            <td >
+                                <a th:onclick="done([[${updateMsg.updateMsg.id}]],[[${updateMsg.updateMsg.userID}]])">标记已阅</a>
+                            </td>
+                        </tr>
+                        <tr>
+
+                            <th colspan="7" >
+                                <div class="ui mini pagination menu" th:if="${page1.pages}>1">
+                                    <div class="ui mini pagination menu" th:if="${page1.pages}>1">
+                                        <div class="ui item mini button"><a th:onclick="news(0,1)">首页</a></div>
+                                        <div class="ui item mini button"><a th:onclick="news(0,[[${page1.hasPreviousPage}?${page1.prePage}:1]])">上一页</a></div>
+                                        <div class="ui item mini button"><a th:onclick="news(0,[[${page1.hasNextPage}?${page1.nextPage}:${page1.pages}]])">下一页</a></div>
+                                        <div class="ui item mini button"><a th:onclick="news(0,[[${page1.pages}]])">尾页</a></div>
+                                    </div>
+                                </div>
+                                <div class="ui mini segment m-inline-block">
+                                    <p >当前第<span th:text="${page1.pageNum}"></span>页，总<span th:text="${page1.pages}"></span>页，共<span th:text="${page1.total}"></span>条记录</p>
+                                </div>
+                                <a  th:onclick="done(0,2)"  class="ui mini right floated red basic button">清空</a>
+                            </th>
+
+                        </tr>
+                    </div>
+                    </tbody>
+                    <tfoot>
+                    </tfoot>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<!--底部footer-->
+<footer  th:replace="_fragments :: footer" class="ui inverted vertical segment m-padded-tb-massive">
+</footer>
+
+<!--/*/<th:block th:replace="_fragments :: script">/*/-->
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.2/dist/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/semantic-ui/2.2.4/semantic.min.js"></script>
+<script src="../../static/lib/editormd/editormd.min.js"></script>
+<!--/*/</th:block>/*/-->
+</body>
+
+</html>
+<script>
+    function news(userid,pagenum) {
+
+        if(userid!='0'){
+            $("[name='userid']").val(userid);
+        }
+
+
+        // $("#updateMsg").attr("each","updateMsg,iterStat : ${page.list}") ;
+            $("#updateMsg").load("/follow/user/updateMsg",{
+                "userid" : $("[name='userid']").val(),
+                "pagenum" : pagenum,
+            },function (responseTxt, statusTxt, xhr) {
+
+                console.log(xhr);
+            });
+
+        $('.ui.large.modal')
+            .modal('show')
+        ;
+
+    }
+
+    function done(updateid,userid) {
+
+        if(userid=='2'){
+            userid = $("[name='userid']").val();
+        }
+
+        // $("#updateMsg").attr("each","updateMsg,iterStat : ${page.list}") ;
+        $("#updateMsg").load("/follow/user/updateMsg/done",{
+            "updateid" : updateid,
+            "userid" : userid,
+        },function (responseTxt, statusTxt, xhr) {
+
+            console.log(xhr);
+        });
+
+
+
+    }
+
+
+</script>

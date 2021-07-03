@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wj.dao.CommentMapper">
+
+    <sql id="Base_Column" >
+	id,context,createTime,target,blogID,userID,floor,status,parentFloor
+    </sql>
+
+    <sql id="Example_Where_Clause">
+        where 1=1
+        <trim suffixOverrides=",">
+            <if test="id !=null and id !=''  ">
+                and id=#{id}
+            </if>
+            <if test="context !=null and context !=''  ">
+                and context=#{context}
+            </if>
+            <if test="createTime !=null and createTime !=''  ">
+                and  createTime=#{createTime}
+            </if>
+            <if test="target !=null and target !=''  ">
+                and  target=#{target}
+            </if>
+            <if test="blogID !=null and blogID !='' ">
+                and  blogID=#{blogID}
+            </if>
+            <if test="userID !=null and userID !='' ">
+                and  userID=#{userID}
+            </if><if test="floor !=null and floor !='' ">
+            and  floor=#{floor}
+            </if>
+            <if test="parentFloor !=null and parentFloor !='' ">
+                and  parentFloor=#{parentFloor}
+            </if>
+        </trim>
+    </sql>
+
+    <insert id="addComment" parameterType="Comment">
+        insert into comment (`id`,`context`,`createTime`,`target`,`blogID`,`userID`,`floor`,`status`,`parentFloor`)
+                   values (#{id},#{context},#{createTime},#{target},#{blogID},#{userID},#{floor},#{status},#{parentFloor})
+    </insert>
+
+    <update id="deleteComment" parameterType="Comment">
+        update comment set status = 1 where id=#{id}
+    </update>
+
+    <update id="updateComment" parameterType="Comment">
+        update comment set
+        <trim suffixOverrides=",">
+            <if test="context !=null ">
+                context=#{context},
+            </if>
+            <if test="createTime !=null ">
+                createTime=#{createTime},
+            </if>
+            <if test="target !=null ">
+                target=#{target},
+            </if>
+            <if test="blogID !=null ">
+                blogID=#{blogID},
+            </if>
+            <if test="userID !=null ">
+                userID=#{userID},
+            </if>
+            <if test="floor !=null ">
+                floor=#{floor},
+            </if>
+            <if test="status !=null ">
+                status=#{status},
+            </if>
+            <if test="parentFloor !=null ">
+                parentFloor=#{parentFloor},
+            </if>
+        </trim>where id =#{id}
+    </update>
+
+    <select id="listComment" parameterType="Comment" resultType="Comment">
+        select  <include refid="Base_Column"></include>
+        from comment
+        <include refid="Example_Where_Clause"></include> and status=0 ORDER BY createtime desc
+    </select>
+
+    <select id="countComment" parameterType="String" resultType="Integer">
+        select count(*)
+        from comment where blogid = #{id} and status =0
+    </select>
+
+    <select id="countComment2" parameterType="Comment" resultType="Integer">
+        select count(*)
+        from comment
+        <include refid="Example_Where_Clause"></include> and status=0
+    </select>
+
+    <select id="getCommentById" parameterType="String" resultType="Comment">
+        select <include refid="Base_Column"></include>
+        from comment where id=#{id}
+    </select>
+</mapper>
